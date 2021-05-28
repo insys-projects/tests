@@ -102,7 +102,7 @@ int MEM_init(CMem* &pMem)
 	std::tie(idev, devName, pid, bus, dev) = isService(g_lid, g_MemSrvName); // c++14
 	if (idev >= 0)
 	{
-		printf("Device%d (%s s/n = %d, Bus = %d, Dev = %d) : %s\n"
+		printf("LOG: Device%d (%s s/n = %d, Bus = %d, Dev = %d) : %s\n"
 			, idev
 			, devName.c_str()
 			, pid
@@ -118,26 +118,26 @@ int MEM_init(CMem* &pMem)
 		int ret = pMem->getPhysMem(&phys_mem_size);
 		if (ret == -1)
 		{
-			BRDC_printf(_BRDC("MEM%d: Get SDRAM Config: Error!!!\n"), idev);
+			BRDC_printf(_BRDC("ERROR: MEM%d: Get SDRAM Config: Error!!!\n"), idev);
 			idev = -3;
 		}
 		else
 			if (phys_mem_size)
 			{
 				if (mem_cfg.MemType == 11)  //DDR3
-					BRDC_printf(_BRDC("MEM%d: DDR3 on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
+					BRDC_printf(_BRDC("LOG: %d: DDR3 on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
 				else
 					if (mem_cfg.MemType == 12)  //DDR4
-						BRDC_printf(_BRDC("MEM%d: DDR4 on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
+						BRDC_printf(_BRDC("LOG: MEM%d: DDR4 on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
 					else
-						BRDC_printf(_BRDC("MEM%d: SDRAM on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
-				BRDC_printf(_BRDC("MEM%d: SDRAM on board size = %llu MBytes\n"), idev, phys_mem_size / (1024 * 1024));
+						BRDC_printf(_BRDC("LOG: MEM%d: SDRAM on board width = %d bits\n"), idev, mem_cfg.PrimWidth);
+				BRDC_printf(_BRDC("LOG: MEM%d: SDRAM on board size = %llu MBytes\n"), idev, phys_mem_size / (1024 * 1024));
 				g_bExpectedSize = phys_mem_size;
 				//numberOfBlocks = U32(phys_mem_size / BLOCK_SIZE);
 			}
 			else
 			{
-				BRDC_printf(_BRDC("MEM%d: No SDRAM on board!!!\n"), idev);
+				BRDC_printf(_BRDC("ERROR: MEM%d: No SDRAM on board!!!\n"), idev);
 				idev = -4;
 			}
 		ret = idev;
@@ -145,9 +145,9 @@ int MEM_init(CMem* &pMem)
 	else
 	{
 		if(idev == -1)
-			printf("No device with LID=%d\n", g_lid);
+			printf("ERROR: No device with LID=%d\n", g_lid);
 		if (idev == -2)
-			printf("Device%d (LID=%d) has NOT the service %s\n", idev, g_lid, g_MemSrvName.c_str());
+			printf("ERROR: Device%d (LID=%d) has NOT the service %s\n", idev, g_lid, g_MemSrvName.c_str());
 	}
 	return idev;
 }
@@ -158,7 +158,7 @@ int MEM_init(int devices)
 	int idev = -1;
 	int num_srv = 0;		// число найденных служб
 
-	printf("\nMEM init:-----------------------------------\n");
+	//printf("\nMEM init:-----------------------------------\n");
 	for (int i = 0; i < MAX_DEV; i++)
 	{
 		string devName; U32	pid; S32 bus, dev;	// Device Name, Board Physical ID (serial number), PCI Bus, PCI Device
@@ -168,7 +168,7 @@ int MEM_init(int devices)
 		{
 			//BRDC_printf(_BRDC("Device%d has the service %s\n"), idev, g_MemSrvName);
 			//printf(" has the service %s\n", g_MemSrvName.c_str());
-			printf("Device%d (%s s/n = %d, Bus = %d, Dev = %d) : %s\n"
+			printf("LOG: Device%d (%s s/n = %d, Bus = %d, Dev = %d) : %s\n"
 				, idev
 				, devName.c_str()
 				, pid
@@ -185,23 +185,23 @@ int MEM_init(int devices)
 			U64 phys_mem_size;
 			int ret = g_pMem[num_srv - 1]->getPhysMem(&phys_mem_size);
 			if (ret == -1)
-				BRDC_printf(_BRDC("MEM%d: Get SDRAM Config: Error!!!\n"), num_srv - 1);
+				BRDC_printf(_BRDC("ERROR: MEM%d: Get SDRAM Config: Error!!!\n"), num_srv - 1);
 			else
 				if (phys_mem_size)
 				{
 					if (mem_cfg.MemType == 11)  //DDR3
-						BRDC_printf(_BRDC("MEM%d: DDR3 on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
+						BRDC_printf(_BRDC("LOG: MEM%d: DDR3 on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
 					else
 						if (mem_cfg.MemType == 12)  //DDR4
-							BRDC_printf(_BRDC("MEM%d: DDR4 on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
+							BRDC_printf(_BRDC("LOG: MEM%d: DDR4 on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
 						else
-							BRDC_printf(_BRDC("MEM%d: SDRAM on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
-					BRDC_printf(_BRDC("MEM%d: SDRAM on board size = %llu MBytes\n"), num_srv - 1, phys_mem_size / (1024 * 1024));
+							BRDC_printf(_BRDC("LOG: MEM%d: SDRAM on board width = %d bits\n"), num_srv - 1, mem_cfg.PrimWidth);
+					BRDC_printf(_BRDC("LOG: MEM%d: SDRAM on board size = %llu MBytes\n"), num_srv - 1, phys_mem_size / (1024 * 1024));
 					g_bExpectedSize = phys_mem_size;
 					//numberOfBlocks = U32(phys_mem_size / BLOCK_SIZE);
 				}
 				else
-					BRDC_printf(_BRDC("MEM%d: No SDRAM on board!!!\n"), num_srv - 1);
+					BRDC_printf(_BRDC("ERROR: MEM%d: No SDRAM on board!!!\n"), num_srv - 1);
 		}
 		else
 		{
@@ -220,21 +220,21 @@ void displayAllocInfo(int status, unsigned long long bExpectedSize, unsigned lon
 	switch (status)
 	{
 	case 0:
-		printf("Allocating memory is success");
+		printf("LOG: Allocating memory is success");
 		break;
 	case -1:
-		printf("Error allocating memory by the application (type is APP_USER_MEMORY)");
+		printf("ERROR: Error allocating memory by the application (type is APP_USER_MEMORY)");
 		return;
 	case 1:
 	{
-		printf("The allocated memory size (%lld MBytes) is not equal the expected one (%lld MBytes)"
+		printf("WARN: The allocated memory size (%lld MBytes) is not equal the expected one (%lld MBytes)"
 			, bExpectedSize / 1024 / 1024
 			, bDaqSize / 1024 / 1024
 		);
 		break;
 	}
 	default:
-		printf("Error allocating memory = 0x%X", status);
+		printf("ERROR: Error allocating memory = 0x%X", status);
 		return;
 	}
 
@@ -262,7 +262,7 @@ void displayAllocInfo(int status, unsigned long long bExpectedSize, unsigned lon
 int MEM_prepare(int num_srv)
 {
 	int status = 0;
-	BRDC_printf(_BRDC("\nMEM prepare:--------------------------------\n"));
+	//BRDC_printf(_BRDC("\nMEM prepare:--------------------------------\n"));
 	for (int i = 0; i < num_srv; i++)
 	{
 		status = g_pMem[i]->setTestMode(g_test_mode);
@@ -318,7 +318,7 @@ unsigned long long checkPsdSeq(unsigned long long cnt_err, int iCircle, int iCnt
 					if (cnt_err < 16)
 					{
 						unsigned long long mem_adr = (unsigned long long)iCnt * (blkSize * blkNum) + iBlock * blkSize + ( (i+j) << 3 );
-						printf("MEM%d(%016llX) ERROR (%d, %d, %d, %d): exp %016llX : rd %016llX : xor %016llX\n", iMem, mem_adr, i + j, iBlock, iCnt, iCircle, data_wr[j], data_rd, data_wr[j] ^ data_rd);
+						printf("ERROR: MEM%d(%016llX) ERROR (%d, %d, %d, %d): exp %016llX : rd %016llX : xor %016llX\n", iMem, mem_adr, i + j, iBlock, iCnt, iCircle, data_wr[j], data_rd, data_wr[j] ^ data_rd);
 					}
 					data_wr[j] = data_rd;
 				}
@@ -373,7 +373,7 @@ unsigned long long checkCntSeq(unsigned long long cnt_err, int iCircle, int iCnt
 				if (cnt_err < 16)
 				{
 					unsigned long long mem_adr = (unsigned long long)iCnt * (blkSize * blkNum) + iBlock * blkSize + (i << 3);
-					printf("MEM%d(%016llX) ERROR (%d, %d, %d, %d): exp %016llX : rd %016llX : xor %016llX\n", iMem, mem_adr, i, iBlock, iCnt, iCircle, data_wr, data_rd, data_wr^data_rd);
+					printf("ERROR: MEM%d(%016llX) ERROR (%d, %d, %d, %d): exp %016llX : rd %016llX : xor %016llX\n", iMem, mem_adr, i, iBlock, iCnt, iCircle, data_wr, data_rd, data_wr^data_rd);
 				}
 			}
 			data_wr++;
@@ -400,7 +400,7 @@ S32	MEM_getData(int iCycle, int num_srv)
 		status = g_pMem[iMem]->doDaqMem(msTimeout);
 		if (!BRD_errcmp(status, BRDerr_OK))
 		{
-			printf("ERROR by doDaqMem!!!                         \n");
+			printf("ERROR: ERROR by doDaqMem!!!                         \n");
 			return status;
 		}
 	}
@@ -425,10 +425,10 @@ S32	MEM_getData(int iCycle, int num_srv)
 			//if (!BRD_errcmp(status, BRDerr_OK))
 			if(status)
 			{
-				printf("ERROR by dataXmem!!!                         \n");
+				printf("ERROR: ERROR by dataXmem!!!                         \n");
 				return status;
 			}
-			printf("Cycles %d Blocks %d Errors = %llu    \r", iCycle, iCnt + 1, cnt_err);
+			printf("LOG: Cycles %d Blocks %d Errors = %llu    \r", iCycle, iCnt + 1, cnt_err);
 			//cnt_err = checkPsdSeq(cnt_err, iCnt, pBuf, blkSize, data_wr, 4);
 			if(g_test_mode == MEM_TEST_PSD)
 				cnt_err = checkPsdSeq(cnt_err, iCycle, iCnt, iMem, data_wr, 4);
@@ -543,17 +543,17 @@ int main(int argc, char *argv[])
 
 	signal(SIGINT, sig_handler);
 
-	printf("Memory on Board test v1.2: ");
+	printf("LOG: Memory on Board test v1.2: ");
 	if (g_test_mode == MEM_TEST_PSD)
-		printf("Pseudo random sequence!!!\n");
+		printf("LOG: Pseudo random sequence!!!\n");
 	if (g_test_mode == MEM_TEST_CNT)
-		printf("64-bits Counter!!!\n");
+		printf("LOG: 64-bits Counter!!!\n");
 
 	int devices = CDevice::Init(0); // 0 - инициализация по LID'ам, 1 (по-умолчанию) - автоматическая инициализация
 	if (0 >= devices)
 	{
-		if (0 == devices) 	printf("No devices!!!\n");
-		else  				printf("ERROR by initialization of BARDY library!!!\n");
+		if (0 == devices) 	printf("ERROR: No devices!!!\n");
+		else  				printf("ERROR: ERROR by initialization of BARDY library!!!\n");
 		//printf("\nPress any key for leaving program...\n");
 		//IPC_getch();
 		//IPC_cleanupKeyboard();
@@ -592,7 +592,7 @@ int main(int argc, char *argv[])
 				if (g_repeat > 0 && iCycle >= g_repeat)
 					break;
 			}
-			printf("\nRepetitions  = %d Total errors = %llu                          \n", iCycle, g_total_err);
+			printf("\nLOG: Repetitions  = %d Total errors = %llu                          \n", iCycle, g_total_err);
 		}
 	}
 
