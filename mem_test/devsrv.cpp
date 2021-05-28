@@ -119,7 +119,8 @@ int CDeviceSrv::getPhysMem(U64* pPhysMemSize)
 //#define MAX_BLOCK_SIZE 134217728		// максимальный размер блока = 128 Мбайт 
 #define MAX_BLOCK_SIZE 4194304			// максимальный размер блока = 4 Mбайтa 
 #else  // LINUX
-#define MAX_BLOCK_SIZE 4194304			// максимальный размер блока = 4 Mбайтa 
+//#define MAX_BLOCK_SIZE 4194304			// максимальный размер блока = 4 Mбайтa 
+#define MAX_BLOCK_SIZE 1048576			// максимальный размер блока = 1 Mбайт
 #endif
 
 //	pSig - указатель на массив указателей (IN), каждый элемент массива является указателем на блок (OUT)

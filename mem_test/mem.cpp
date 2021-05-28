@@ -57,7 +57,12 @@ int CMem::setTestMode(int memTestMode)
 	return status;
 }
 
+#ifdef _WIN32
 #define STREAM_BUF_SIZE_BY_MEM 128 * 1024 * 1024 // размер буфера стрима при сборе в память (128Мбайт)
+#else  // LINUX
+#define STREAM_BUF_SIZE_BY_MEM 64 * 1024 * 1024 // размер буфера стрима при сборе в память (64Мбайт)
+//#define STREAM_BUF_SIZE_BY_MEM 1 * 1024 * 1024 // размер буфера стрима при сборе в память (1Мбайт)
+#endif
 
 // установить параметры сбора 
 // useMemOnBoard - (IN) использование динамической памяти на устройстве:
@@ -90,7 +95,8 @@ int CMem::setDaqParam(int useMemOnBoard, int streamMemoryType, unsigned long lon
 		//BRDC_printf(_BRDC("SDRAM size for DAQ data = %d MBytes\n"), int(m_bMemSize / (1024 * 1024)));
 		bStreamSize = STREAM_BUF_SIZE_BY_MEM; // при сборе в память для стрима размещаем буфер на 128Мбайт
 		if (bStreamSize > m_activeMemSize) bStreamSize = m_activeMemSize;
-		m_buf_dscr.isCont = SYSTEM_MEMORY; // при сборе в память для стрима используем системную память
+		//m_buf_dscr.isCont = SYSTEM_MEMORY; // при сборе в память для стрима используем системную память
+		m_buf_dscr.isCont = DLL_USER_MEMORY; // если системной памяти недостаточно, выделяем пользовательскую
 	}
 
 	m_buf_dscr.blkNum = 1;
